@@ -71,9 +71,10 @@ thin.core.ImageFile.openDialog = function(callbacks) {
 thin.core.ImageFile.prototype.initSize_ = function() {
   var tmpImg = new Image();
   tmpImg.src = this.data_;
-
-  this.width_ = tmpImg.width;
-  this.height_ = tmpImg.height;
+  tmpImg.onload = function(e){
+    this.width_ = e.path[0].width;
+    this.height_ = e.path[0].height;
+  }.bind(this);
 
   tmpImg = null;
 };
