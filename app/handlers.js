@@ -5,18 +5,22 @@ const path = require('path');
 const handlers = {};
 
 handlers.layoutOpen = (callback) => {
-  const filenames = dialog.showOpenDialogSync({
+  let defaultPath = localStorage.getItem('layoutOpen.defaultPath');
+  let options = {
     filters: [
       {name: 'Thinreports Layout File', extensions: ['tlf']}
     ],
     properties: ['openFile']
-  });
+  };
+  if(!!defaultPath) options.defaultPath = defaultPath;
+  const filenames = dialog.showOpenDialogSync(options);
 
   if (!filenames) {
     callback.onCancel();
     return;
   }
-
+  defaultPath = filenames[0].substring(0, filenames[0].lastIndexOf('/'));
+  localStorage.setItem('layoutOpen.defaultPath', defaultPath);
   const content = fs.readFileSync(filenames[0], { encoding: 'utf-8' });
 
   callback.onSuccess(content, {
